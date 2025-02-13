@@ -17,7 +17,7 @@
 
 
 
-<title>Archivos | 「现实以下全集」</title>
+<title>Archives | 「现实以下全集」</title>
 
 
 
@@ -89,7 +89,7 @@
       window.matchMedia("(prefers-color-scheme: dark)").matches;
     const isDark = document.documentElement.classList.contains("dark");
     $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-
+    document.documentElement.style.setProperty("--mod-card-bg-color", isDark ? "#0d0d0d" : "#f6f6f6");
     function toggleGiscusTheme() {
       const isDark = document.documentElement.classList.contains("dark");
       const giscusFrame = document.querySelector("iframe.giscus-frame");
@@ -113,6 +113,7 @@
       const setting = localStorage.getItem("hexo-color-scheme") || "auto";
       isDark = !isDark;
       document.documentElement.classList.toggle("dark", isDark);
+      document.documentElement.style.setProperty("--mod-card-bg-color", isDark ? "#0d0d0d" : "#f6f6f6");
       $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
       if (prefersDark === isDark) {
         localStorage.setItem("hexo-color-scheme", "auto");
@@ -129,6 +130,8 @@
         const setting = localStorage.getItem("hexo-color-scheme") || "auto";
         if (setting === "auto") {
           document.documentElement.classList.toggle("dark", e.matches);
+          document.documentElement.style.setProperty("--mod-card-bg-color", e.matches ? "#0d0d0d" : "#f6f6f6");
+          console.log("ww");
           $("#theme-icon").attr(
             "icon",
             e.matches ? "ri:moon-line" : "ri:sun-line"
@@ -198,12 +201,30 @@
       </div>
       <div class="flex-1"></div>
       <div class="flex items-center gap-3">
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml"></a>
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+         
+          
+            <a class="hidden sm:flex" href="/categories">
+              <iconify-icon width="20" icon="iconamoon:category" id="theme-icon"></iconify-icon>
+            </a>
+          
         
-          <a class="hidden sm:flex" href="/categories">Categories</a>
+          
+            <a class="hidden sm:flex" href="/tags">
+              <iconify-icon width="20" icon="tabler:tag" id="theme-icon"></iconify-icon>
+            </a>
+          
         
-          <a class="hidden sm:flex" href="/tags">Tags</a>
-        
-          <a class="hidden sm:flex" href="/about">About</a>
+          
+            <a class="hidden sm:flex" href="/about">
+              <iconify-icon width="20" icon="flowbite:profile-card-outline" id="theme-icon"></iconify-icon>
+            </a>
+          
         
         
           
@@ -216,12 +237,7 @@
             </a>
           
         
-        <a class="w-5 h-5 hidden sm:flex" title="ZhiHu" href="rss2.xml">
-          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
-        </a>
-        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
-          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
-        </a>
+
       </div>
       <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
         <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
@@ -256,7 +272,7 @@
 </div>
 
   <main class="pt-14">
-    <section class="px-6 max-w-prose mx-auto gap-12 grid grid-cols-1">
+    <section class="px-6 max-w-prose mx-auto gap-12 grid grid-cols-1" style="margin-top: 15vh;">
   <div class="flex flex-col h-48 items-center justify-center">
     <h1 class="site-title text-4xl leading-relaxed">
       「现实以下全集」
@@ -273,7 +289,27 @@
         <span class="text-9xl opacity-10 absolute -left-11 -top-6 font-bold">2025</span>
       </div>
     
-    <a style="--stagger:0" href="/2025/01/24/%E7%AE%97%E6%B3%954%E5%AD%A6%E4%B9%A0-Union-Find/" data-animate>
+    <a style="--stagger:0" href="/2025/02/13/%E5%9B%BE%E8%AE%BA%E4%B9%8Bdfs-bfs-%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E3%80%81%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          图论之dfs, bfs(深度优先搜索、广度优先搜索)
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          
+        </p>
+        <p class="line-clamp-4">
+          Feb 13
+          ·
+          16 min
+        </p>
+      </section>
+    </a>
+  
+    
+    
+    <a style="--stagger:1" href="/2025/01/24/%E7%AE%97%E6%B3%954%E5%AD%A6%E4%B9%A0-Union-Find/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           算法4学习--Union-Find
@@ -297,7 +333,7 @@
         <span class="text-9xl opacity-10 absolute -left-11 -top-6 font-bold">2024</span>
       </div>
     
-    <a style="--stagger:1" href="/2024/12/05/%E4%BD%BF%E7%94%A8ollama%E9%83%A8%E7%BD%B2%E6%9C%AC%E5%9C%B0%E5%A4%A7%E6%A8%A1%E5%9E%8B/" data-animate>
+    <a style="--stagger:2" href="/2024/12/05/%E4%BD%BF%E7%94%A8ollama%E9%83%A8%E7%BD%B2%E6%9C%AC%E5%9C%B0%E5%A4%A7%E6%A8%A1%E5%9E%8B/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           使用Ollama部署本地大模型
@@ -317,7 +353,7 @@
   
     
     
-    <a style="--stagger:2" href="/2024/11/24/hello-world/" data-animate>
+    <a style="--stagger:3" href="/2024/11/24/hello-world/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           Hello World
@@ -338,6 +374,7 @@
 </section>
 
   </main>
+  <div class="mod-footer">
   <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
     <!-- busuanzi -->
     
@@ -355,19 +392,21 @@
         <div class="flex items-center gap-2">
             <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC
                 BY-NC-SA 4.0</a>
-            <span>© 2024 - </span>
-            <iconify-icon width="18" icon="emojione-monotone:maple-leaf"></iconify-icon>
-            <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">fogsong233</a>
+          <span>© 2024 - 2025</span>
+            <iconify-icon width="18" icon="mynaui:terminal-solid"></iconify-icon>
+            <a href="https://github.com/fogsong233" target="_blank" rel="noopener noreferrer">Kacent</a>
         </div>
         <!-- powered by -->
         <div class="flex items-center gap-2">
             <span>Powered by</span>
             <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
-            <span>&</span>
+            <span>and</span>
+            <i>modified</i>
             <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
         </div>
 
 </footer>
+
   <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
     <span class="flex justify-center items-center text-sm">
       <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
@@ -409,6 +448,20 @@
 
 
   <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+  </div>
 </body>
+<style>
+  html {
+    min-height: 100%;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  body > main {
+    flex-grow: 1;
 
+  }
+</style>
 </html>

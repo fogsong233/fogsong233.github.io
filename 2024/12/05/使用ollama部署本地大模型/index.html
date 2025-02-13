@@ -89,7 +89,7 @@
       window.matchMedia("(prefers-color-scheme: dark)").matches;
     const isDark = document.documentElement.classList.contains("dark");
     $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-
+    document.documentElement.style.setProperty("--mod-card-bg-color", isDark ? "#0d0d0d" : "#f6f6f6");
     function toggleGiscusTheme() {
       const isDark = document.documentElement.classList.contains("dark");
       const giscusFrame = document.querySelector("iframe.giscus-frame");
@@ -113,6 +113,7 @@
       const setting = localStorage.getItem("hexo-color-scheme") || "auto";
       isDark = !isDark;
       document.documentElement.classList.toggle("dark", isDark);
+      document.documentElement.style.setProperty("--mod-card-bg-color", isDark ? "#0d0d0d" : "#f6f6f6");
       $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
       if (prefersDark === isDark) {
         localStorage.setItem("hexo-color-scheme", "auto");
@@ -129,6 +130,8 @@
         const setting = localStorage.getItem("hexo-color-scheme") || "auto";
         if (setting === "auto") {
           document.documentElement.classList.toggle("dark", e.matches);
+          document.documentElement.style.setProperty("--mod-card-bg-color", e.matches ? "#0d0d0d" : "#f6f6f6");
+          console.log("ww");
           $("#theme-icon").attr(
             "icon",
             e.matches ? "ri:moon-line" : "ri:sun-line"
@@ -198,12 +201,30 @@
       </div>
       <div class="flex-1"></div>
       <div class="flex items-center gap-3">
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml"></a>
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+         
+          
+            <a class="hidden sm:flex" href="/categories">
+              <iconify-icon width="20" icon="iconamoon:category" id="theme-icon"></iconify-icon>
+            </a>
+          
         
-          <a class="hidden sm:flex" href="/categories">Categories</a>
+          
+            <a class="hidden sm:flex" href="/tags">
+              <iconify-icon width="20" icon="tabler:tag" id="theme-icon"></iconify-icon>
+            </a>
+          
         
-          <a class="hidden sm:flex" href="/tags">Tags</a>
-        
-          <a class="hidden sm:flex" href="/about">About</a>
+          
+            <a class="hidden sm:flex" href="/about">
+              <iconify-icon width="20" icon="flowbite:profile-card-outline" id="theme-icon"></iconify-icon>
+            </a>
+          
         
         
           
@@ -216,12 +237,7 @@
             </a>
           
         
-        <a class="w-5 h-5 hidden sm:flex" title="ZhiHu" href="rss2.xml">
-          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
-        </a>
-        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
-          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
-        </a>
+
       </div>
       <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
         <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
@@ -269,9 +285,9 @@
 <nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
 
 
-<section class="px-6 max-w-prose mx-auto md:px-0">
+<section class="px-6 mx-auto md:px-0 mod-width max-w-prose"  style=" margin-top: 15vh !important;">
   <!-- header -->
-  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12" >
     <div class="pt-4 md:pt-6">
       <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
         使用Ollama部署本地大模型
@@ -304,7 +320,7 @@
     </div>
   </header>
   <!-- content -->
-  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert mod-width"">
     <p>在AI逐渐火热的今天，没有一个属于自己的本地大模型怎么行呢，今天来教你使用Ollma快速搭建一个利用本地算力的聊天网站，支持多种本地模型，效果如图:</p>
 <p><img src="https://raw.githubusercontent.com/fogsong233/imgbed/main/2024/12/05-22-43-28-2024-12-05-22-42-04-image.png"></p>
 <h3 id="硬件要求"><a href="#硬件要求" class="headerlink" title="硬件要求"></a>硬件要求</h3><p>作者的电脑是Windows 11，显卡是RTX 4060，推荐有显卡的电脑安装，如果你的显卡内存少于16gb，建议使用参数在7B左右的模型，不然对话会生成的很慢。同时你需要保证你有能访问Github等网站的环境。</p>
@@ -358,7 +374,7 @@
     
   </div>
   <!-- prev and next -->
-  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+  <div class="flex justify-between mt-12 pt-6">
     <div>
       
         <a href="/2025/01/24/%E7%AE%97%E6%B3%954%E5%AD%A6%E4%B9%A0-Union-Find/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
@@ -480,7 +496,17 @@
 <!-- tocbot end -->
 
 
+<style>
+  @media screen and (min-width: 900px) {
+    .mod-width {
+     max-width: 87ch !important;
+    }
+  }
+
+</style>
+
   </main>
+  <div class="mod-footer">
   <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
     <!-- busuanzi -->
     
@@ -498,19 +524,21 @@
         <div class="flex items-center gap-2">
             <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC
                 BY-NC-SA 4.0</a>
-            <span>© 2024 - </span>
-            <iconify-icon width="18" icon="emojione-monotone:maple-leaf"></iconify-icon>
-            <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">fogsong233</a>
+          <span>© 2024 - 2025</span>
+            <iconify-icon width="18" icon="mynaui:terminal-solid"></iconify-icon>
+            <a href="https://github.com/fogsong233" target="_blank" rel="noopener noreferrer">Kacent</a>
         </div>
         <!-- powered by -->
         <div class="flex items-center gap-2">
             <span>Powered by</span>
             <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
-            <span>&</span>
+            <span>and</span>
+            <i>modified</i>
             <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
         </div>
 
 </footer>
+
   <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
     <span class="flex justify-center items-center text-sm">
       <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
@@ -552,6 +580,20 @@
 
 
   <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+  </div>
 </body>
+<style>
+  html {
+    min-height: 100%;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  body > main {
+    flex-grow: 1;
 
+  }
+</style>
 </html>
