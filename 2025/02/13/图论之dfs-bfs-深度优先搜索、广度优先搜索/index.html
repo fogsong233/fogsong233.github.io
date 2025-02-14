@@ -3,6 +3,16 @@
 <head>
   <meta charset="UTF-8">
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B4QJNFXHT9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-B4QJNFXHT9');
+</script>
+<!-- End Google Analytics -->
+
 
 
 
@@ -185,6 +195,18 @@
 
 
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200..900&family=Shafarik&display=swap" rel="stylesheet">
+
+<style>
+  .title-serif {
+    font-family: "Noto Serif SC", serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+</style>
+
 <meta name="generator" content="Hexo 7.3.0"></head>
 <body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.min.js"></script>
@@ -290,7 +312,7 @@
   <!-- header -->
   <header class="overflow-hidden pt-6 pb-6 md:pt-12" >
     <div class="pt-4 md:pt-6">
-      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]" style="font-family: serif;">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem] title-serif">
         图论之dfs, bfs(深度优先搜索、广度优先搜索)
       </h1>
       <div>
@@ -440,9 +462,41 @@
       
     </div>
   </div>
-  <!-- comment -->
-  <div class="article-comments mt-12">
     
+<script
+  src="https://giscus.app/client.js"
+  data-repo="fogsong233/blog-comments"
+  data-repo-id="R_kgDON5WHVA"
+  data-category="Announcements"
+  data-category-id="DIC_kwDON5WHVM4Cm9Fd"
+  data-mapping="title"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+  data-theme="preferred_color_scheme"
+  data-lang="zh-CN"
+  crossorigin="anonymous"
+  async
+></script>
+<script>
+  window.onload = function () {
+    console.log("giscus loaded");
+    const isDark = document.documentElement.classList.contains("dark");
+    const giscusFrame = document.querySelector("iframe.giscus-frame");
+    giscusFrame.contentWindow.postMessage(
+      {
+        giscus: {
+          setConfig: {
+            theme: isDark ? "noborder_gray" : "noborder_light",
+          },
+        },
+      },
+      "https://giscus.app"
+    );
+  };
+</script>
+
 
   </div>
 </section>
@@ -580,7 +634,7 @@
             <span>Powered by</span>
             <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
             <span>and</span>
-            <i>modified</i>
+            <a href="https://github.com/fogsong233/hexo-theme-maple" target="_blank" rel="noopener noreferrer"><i>modified</i></a>
             <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
         </div>
 
@@ -628,5 +682,58 @@
 
   <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
 </body>
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  body > main {
+    flex: 1;
+  }
 
+:root {
+  --mod-card-bg-color: #f6f6f6;
+}
+
+.cat-title {
+  font-size: 2.5em;
+  margin:3em 0.5em 5rem;
+}
+
+.cat-card {
+  height: 8em;
+  width: 100%;
+  background-color: var(--mod-card-bg-color) !important;
+  padding: 1em 2em;
+  margin: 1.5em auto 0;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  overflow: hidden;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.cat-card:hover {
+  transform: scale(1.05) perspective(1000px) rotateX(-20deg);
+
+}
+
+.cat-name {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.float-num {
+  position: absolute;
+  right: 5%;
+  bottom: 10%;
+  transform: scale(5);
+  font-weight: 700;
+  opacity: 0.9;
+}
+</style>
 </html>

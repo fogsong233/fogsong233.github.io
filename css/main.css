@@ -146,11 +146,9 @@ a:hover {
   --delay: 120ms;
   --start: 0ms;
 }
-@media (prefers-reduced-motion: no-preference) {
-  [data-animate] {
-    animation: enter 0.6s both;
-    animation-delay: calc(var(--stagger) * var(--delay) + var(--start));
-  }
+@ (prefers-reduced-motion:no-preference) [data-animate] {
+  animation: enter 0.6s both;
+  animation-delay: calc(var(--stagger) * var(--delay) + var(--start));
 }
 [data-animation-controller=false] [data-animate] {
   animation: none;
