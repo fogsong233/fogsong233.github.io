@@ -40,10 +40,15 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+      - name: Package Pages artifact
+        run: tar --dereference --hard-dereference --directory public -cvf artifact.tar .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: ./public
+          name: github-pages
+          path: ./artifact.tar
+          retention-days: 1
+          if-no-files-found: error
   deploy:
     needs: build
     environment:
