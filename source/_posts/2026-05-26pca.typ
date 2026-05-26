@@ -1,17 +1,29 @@
 ---
-title: PCA
+title: 从最大方差、最小损失、信息熵逼近到自编码器：为什么 PCA 是线性结构的最优压缩?
 date: 2026-05-26 18:27:18
 tags:
-  - typst
-  - machine-learning
+- typst
+- machine-learning
 categories:
-  - Machine Learning
+- Machine Learning
 typst_render: html
 ---
 
 #import "@preview/cetz:0.5.1"
 #import "@preview/suiji:0.5.1": *
-#set text(font: ("Libertinus Serif", "Noto Serif CJK SC", "Noto Sans CJK SC", "AR PL SungtiL GB", "STZhongsong", "STSong", "SimSun"), size: 12pt)
+
+#set text(
+  font: (
+    "Libertinus Serif",
+    "Noto Serif CJK SC",
+    "Noto Sans CJK SC",
+    "AR PL SungtiL GB",
+    "STZhongsong",
+    "STSong",
+    "SimSun",
+  ),
+  size: 12pt,
+)
 #set page(margin: (x: 2.2cm, y: 2.5cm))
 #set par(justify: true, leading: 0.7em)
 
@@ -66,7 +78,7 @@ $
 
 == 角度一: 最大的多样性
 
-#grid(columns: (1fr, 3em, 1fr), align: center + horizon)[
+#html.frame(grid(columns: (20em, 3em, 20em), align: center + horizon)[
   #cetz.canvas(x: 2, y: 2, {
     import cetz.draw: *
     grid(
@@ -91,7 +103,9 @@ $
     }
   })
 ][
-  $bold(arrow)$
+  $
+    bold(arrow)
+  $
 ][
   #cetz.canvas(x: 2, y: 2, {
     import cetz.draw: *
@@ -119,7 +133,7 @@ $
     stroke(2pt + blue)
     line((0, b), (end / radio, end * a + b))
   })
-]
+])
 
 假设 $M = 2, m = 1$，考虑如左图所示的数据集。显然如果我们选择 $bb(1)$ 为右图的蓝线方向来近似，能得到最好的效果。
 

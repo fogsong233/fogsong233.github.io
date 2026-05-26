@@ -20,6 +20,30 @@ const inlineMathFramePrelude = `
 )
 `;
 
+function readLocalCommand(filePath) {
+  try {
+    return fs.readFileSync(filePath, 'utf8').split(/\r?\n/, 1)[0].trim();
+  } catch (error) {
+    if (error && error.code === 'ENOENT') return '';
+    throw error;
+  }
+}
+
+function resolveTypstCommand(config, root) {
+  if (config.command && config.command !== 'typst') return config.command;
+
+  const envCommand = process.env.TYPST_COMMAND || '';
+  if (envCommand) return envCommand;
+
+  const localCommand = readLocalCommand(path.join(root, '.typst-command'));
+  if (localCommand) return localCommand;
+
+  const localNightly = '/tmp/typst-main-target/release/typst';
+  if (fs.existsSync(localNightly)) return localNightly;
+
+  return config.command || 'typst';
+}
+
 function firstExistingPath(paths) {
   return paths.find(candidate => candidate && fs.existsSync(candidate));
 }
@@ -329,6 +353,7 @@ hexo.extend.renderer.register('typ', 'html', function typstRenderer(data) {
   const sourcePath = resolveSourcePath(hexo, data.path);
   const sourceDir = sourcePath ? path.dirname(sourcePath) : hexo.source_dir;
   const root = path.resolve(hexo.base_dir, config.root || '.');
+  config.command = resolveTypstCommand(config, root);
   const source = readSource(data, sourcePath);
   const input = stripFrontMatter(source);
   const mode = renderMode(source, userConfig);
