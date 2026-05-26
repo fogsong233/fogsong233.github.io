@@ -93,6 +93,7 @@ pagination_dir: page
 include:
   - .nojekyll
 exclude:
+  - "md_editor/lib/codemirror/mode/**/index.html"
 ignore:
   - "**/.hexo-typst-*.typ"
 
