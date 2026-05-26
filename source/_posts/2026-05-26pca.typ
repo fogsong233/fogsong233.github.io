@@ -11,7 +11,7 @@ typst_render: svg
 
 #import "@preview/cetz:0.5.1"
 #import "@preview/suiji:0.5.1": *
-#set text(font: ("Libertinus Serif", "STZhongsong"), size: 12pt)
+#set text(font: ("Libertinus Serif", "Noto Serif CJK SC", "Noto Sans CJK SC", "AR PL SungtiL GB", "STZhongsong", "STSong", "SimSun"), size: 12pt)
 #set page(margin: (x: 2.2cm, y: 2.5cm))
 #set par(justify: true, leading: 0.7em)
 
