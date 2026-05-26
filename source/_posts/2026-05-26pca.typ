@@ -6,7 +6,7 @@ tags:
   - machine-learning
 categories:
   - Machine Learning
-typst_render: svg
+typst_render: html
 ---
 
 #import "@preview/cetz:0.5.1"
