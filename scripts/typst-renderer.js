@@ -7,8 +7,18 @@ const path = require('path');
 const defaultConfig = {
   command: 'typst',
   features: ['html'],
-  extraArgs: []
+  extraArgs: [],
+  inlineMathSvg: true,
+  copyableMathSvg: true
 };
+
+const inlineMathFramePrelude = `
+#show math.equation.where(block: false): it => html.elem(
+  "span",
+  attrs: (class: "typst-inline-math-frame"),
+  html.frame(it),
+)
+`;
 
 function firstExistingPath(paths) {
   return paths.find(candidate => candidate && fs.existsSync(candidate));
@@ -27,7 +37,7 @@ function resolveSourcePath(hexo, dataPath) {
   return firstExistingPath(candidates) || candidates[0];
 }
 
-function htmlBodyFragment(html) {
+function htmlParts(html) {
   const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   const styles = headMatch
@@ -36,7 +46,7 @@ function htmlBodyFragment(html) {
         .join('\n')
     : '';
   const body = (bodyMatch ? bodyMatch[1] : html).trim();
-  return [styles, body].filter(Boolean).join('\n');
+  return { styles, body };
 }
 
 function frontMatter(text) {
@@ -83,6 +93,11 @@ function createTemporaryInput(sourceDir, sourcePath, input) {
   return tempPath;
 }
 
+function featureArgs(config) {
+  const features = Array.isArray(config.features) ? config.features : [];
+  return features.length > 0 ? ['--features', features.join(',')] : [];
+}
+
 function svgPages(outputDir) {
   return fs.readdirSync(outputDir)
     .filter(file => file.endsWith('.svg'))
@@ -94,51 +109,7 @@ function svgBody(svg, index) {
   return `<figure class="typst-page" style="margin:1.5rem auto;max-width:100%;overflow-x:auto" aria-label="Typst page ${index + 1}">${svg}</figure>`;
 }
 
-function renderSvg(config, root, sourceDir, tempPath, dataPath) {
-  const outputDir = path.join(sourceDir, `.hexo-typst-svg-${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`);
-  fs.mkdirSync(outputDir);
-
-  const output = path.join(outputDir, 'page-{0p}.svg');
-  const extraArgs = Array.isArray(config.svgExtraArgs) ? config.svgExtraArgs : [];
-  const args = ['compile', '--format', 'svg', '--root', root, ...extraArgs, tempPath, output];
-
-  let result;
-  try {
-    result = spawnSync(config.command, args, {
-      cwd: sourceDir,
-      encoding: 'utf8',
-      maxBuffer: 1024 * 1024 * 32
-    });
-
-    if (result.error && result.status === null) {
-      throw new Error(
-        `Failed to run "${config.command}": ${result.error.message}. Install Typst and make sure it is available on PATH.`
-      );
-    }
-
-    if (result.status !== 0) {
-      const location = dataPath ? ` while rendering ${dataPath}` : '';
-      const message = result.stderr || result.stdout || `Typst exited with status ${result.status}`;
-      throw new Error(`Typst failed${location}:\n${message.trim()}`);
-    }
-
-    return svgPages(outputDir).map(svgBody).join('\n');
-  } finally {
-    fs.rmSync(outputDir, { recursive: true, force: true });
-  }
-}
-
-function renderHtml(config, root, sourceDir, tempPath, dataPath) {
-  const args = ['compile', '--format', 'html', '--root', root];
-
-  const features = Array.isArray(config.features) ? config.features : [];
-  if (features.length > 0) {
-    args.push('--features', features.join(','));
-  }
-
-  const extraArgs = Array.isArray(config.extraArgs) ? config.extraArgs : [];
-  args.push(...extraArgs, tempPath, '-');
-
+function runTypst(config, args, sourceDir, dataPath) {
   const result = spawnSync(config.command, args, {
     cwd: sourceDir,
     encoding: 'utf8',
@@ -157,7 +128,199 @@ function renderHtml(config, root, sourceDir, tempPath, dataPath) {
     throw new Error(`Typst failed${location}:\n${message.trim()}`);
   }
 
-  return htmlBodyFragment(result.stdout);
+  return result.stdout;
+}
+
+function compileHtml(config, root, sourceDir, tempPath, dataPath) {
+  const extraArgs = Array.isArray(config.extraArgs) ? config.extraArgs : [];
+  const args = [
+    'compile',
+    '--format',
+    'html',
+    '--root',
+    root,
+    ...featureArgs(config),
+    ...extraArgs,
+    tempPath,
+    '-'
+  ];
+
+  return runTypst(config, args, sourceDir, dataPath);
+}
+
+function renderSvg(config, root, sourceDir, tempPath, dataPath) {
+  const outputDir = path.join(sourceDir, `.hexo-typst-svg-${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  fs.mkdirSync(outputDir);
+
+  const output = path.join(outputDir, 'page-{0p}.svg');
+  const extraArgs = Array.isArray(config.svgExtraArgs) ? config.svgExtraArgs : [];
+  const args = [
+    'compile',
+    '--format',
+    'svg',
+    '--root',
+    root,
+    ...featureArgs(config),
+    ...extraArgs,
+    tempPath,
+    output
+  ];
+
+  try {
+    runTypst(config, args, sourceDir, dataPath);
+    return svgPages(outputDir).map(svgBody).join('\n');
+  } finally {
+    fs.rmSync(outputDir, { recursive: true, force: true });
+  }
+}
+
+function decodeEntities(text) {
+  const named = {
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    apos: "'",
+    nbsp: ' '
+  };
+
+  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, body) => {
+    if (body[0] === '#') {
+      const value = body[1].toLowerCase() === 'x'
+        ? Number.parseInt(body.slice(2), 16)
+        : Number.parseInt(body.slice(1), 10);
+      return Number.isFinite(value) ? String.fromCodePoint(value) : entity;
+    }
+    return Object.prototype.hasOwnProperty.call(named, body) ? named[body] : entity;
+  });
+}
+
+function htmlToText(html) {
+  return decodeEntities(html
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div|section|article|h[1-6]|li|ul|ol|tr|table|math|figure)>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n[ \t]+/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim());
+}
+
+function escapeAttribute(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function inlineMathElements(html) {
+  return Array.from(html.matchAll(/<math\b(?![^>]*\bdisplay\s*=\s*["']block["'])[^>]*>[\s\S]*?<\/math>/gi))
+    .map(match => match[0]);
+}
+
+function mathFrameAssets() {
+  return `<style>
+.typst-inline-math-frame {
+  display: inline-block;
+  position: relative;
+  vertical-align: -0.15em;
+}
+.typst-inline-math-frame > svg {
+  display: inline-block !important;
+  vertical-align: middle;
+}
+.typst-inline-math-copy {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+</style>
+<script>
+(function () {
+  if (window.__typstInlineMathCopyInstalled) return;
+  window.__typstInlineMathCopyInstalled = true;
+
+  document.addEventListener('copy', function (event) {
+    var selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || !event.clipboardData) return;
+
+    var fragment = selection.getRangeAt(0).cloneContents();
+    if (!fragment.querySelectorAll) return;
+
+    var changed = false;
+    fragment.querySelectorAll('.typst-inline-math-frame').forEach(function (frame) {
+      var copy = frame.querySelector('.typst-inline-math-copy');
+      if (!copy) return;
+      frame.replaceWith(copy.cloneNode(true));
+      changed = true;
+    });
+
+    if (!changed) return;
+
+    var container = document.createElement('div');
+    container.appendChild(fragment);
+    event.clipboardData.setData('text/html', container.innerHTML);
+    event.clipboardData.setData('text/plain', container.textContent);
+    event.preventDefault();
+  });
+})();
+</script>`;
+}
+
+function addCopyableMathFrames(framedBody, semanticBody) {
+  const inlineMath = inlineMathElements(semanticBody);
+  let index = 0;
+
+  return framedBody.replace(
+    /<span class="typst-inline-math-frame">(<svg\b[\s\S]*?<\/svg>)<\/span>/gi,
+    (match, svg) => {
+      const math = inlineMath[index];
+      index += 1;
+
+      if (!math) return match;
+
+      return [
+        `<span class="typst-inline-math-frame" data-copy-text="${escapeAttribute(htmlToText(math))}">`,
+        svg,
+        `<span class="typst-inline-math-copy" aria-hidden="true">${math}</span>`,
+        `</span>`
+      ].join('');
+    }
+  );
+}
+
+function renderHtml(config, root, sourceDir, sourcePath, input, dataPath) {
+  const useInlineMathSvg = config.inlineMathSvg !== false;
+  const copyableMathSvg = config.copyableMathSvg !== false;
+  const framedInput = useInlineMathSvg ? `${inlineMathFramePrelude}\n${input}` : input;
+  const framedTempPath = createTemporaryInput(sourceDir, sourcePath, framedInput);
+  let semanticTempPath = null;
+
+  try {
+    const framed = compileHtml(config, root, sourceDir, framedTempPath, dataPath);
+    const framedParts = htmlParts(framed);
+
+    if (!useInlineMathSvg || !copyableMathSvg) {
+      return [framedParts.styles, framedParts.body].filter(Boolean).join('\n');
+    }
+
+    semanticTempPath = createTemporaryInput(sourceDir, sourcePath, input);
+    const semantic = compileHtml(config, root, sourceDir, semanticTempPath, dataPath);
+    const semanticParts = htmlParts(semantic);
+    const body = addCopyableMathFrames(framedParts.body, semanticParts.body);
+
+    return [framedParts.styles, mathFrameAssets(), body].filter(Boolean).join('\n');
+  } finally {
+    fs.rmSync(framedTempPath, { force: true });
+    if (semanticTempPath) fs.rmSync(semanticTempPath, { force: true });
+  }
 }
 
 hexo.extend.renderer.register('typ', 'html', function typstRenderer(data) {
@@ -170,10 +333,14 @@ hexo.extend.renderer.register('typ', 'html', function typstRenderer(data) {
   const input = stripFrontMatter(source);
   const mode = renderMode(source, userConfig);
 
+  if (mode === 'html') {
+    return renderHtml(config, root, sourceDir, sourcePath, input, data.path);
+  }
+
   const tempPath = createTemporaryInput(sourceDir, sourcePath, input);
   try {
     if (mode === 'svg') return renderSvg(config, root, sourceDir, tempPath, data.path);
-    return renderHtml(config, root, sourceDir, tempPath, data.path);
+    return renderHtml(config, root, sourceDir, sourcePath, input, data.path);
   } finally {
     fs.rmSync(tempPath, { force: true });
   }

@@ -110,6 +110,8 @@ typst:
     - html
   extraArgs: []
   svgExtraArgs: []
+  inlineMathSvg: true
+  copyableMathSvg: true
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

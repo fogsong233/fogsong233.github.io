@@ -26,7 +26,7 @@ typst_render: html
 #let bb = num => $arrow(b)_#[#num]$
 #let av = num => $arrow(chi)_#[#num]$
 #let zz = num => $arrow(z)_#[#num]$
-#let mt = w => [*#w*]
+#let mt = w => $upright(bold(#w))$
 
 假设我们有 $xx(1), xx(2), dots, xx(N); xx(i) in RR^(M)$，或者说矩阵 $mt(X) in RR^(N times M)$ 的数据。我们想要得到一个子空间，其基向量为：
 $
@@ -38,7 +38,7 @@ $
 
 对应的，$zz(1), zz(2), dots, zz(N) in RR^m$ 为原数据近似到这个子空间的低维坐标，同时：
 $
-  av(i) = mt(B)^T zz(i) in RR^M
+  av(i) = mt(B)^(upright(T)) zz(i) in RR^M
 $
 也就是在原高维空间中近似 $xx(i)$ 的重构向量。
 
@@ -51,14 +51,14 @@ $
 
 形式化地，也就是求以下目标函数的最小值：
 $
-  L = 1/N sum_(i=1)^N ||xx(i) - av(i)||^2, quad av(i) = mt(B)^T zz(i)
+  L = 1/N sum_(i=1)^N ||xx(i) - av(i)||^2, quad av(i) = mt(B)^(upright(T)) zz(i)
 $
 此时的自变量是低维坐标 $zz(i)$。这里使用分母布局直接对 $zz(i)$ 求导：
 $
   (partial L) / (partial zz(i)) = (partial av(i)) / (partial zz(i)) (partial L) / (partial av(i)) = 2/N mt(B) (xx(i) - av(i)) = 0
-  => mt(B) xx(i) = mt(B) av(i) = mt(B) mt(B)^T zz(i)
+  => mt(B) xx(i) = mt(B) av(i) = mt(B) mt(B)^(upright(T)) zz(i)
 $
-因为 $mt(B)$ 的各行是标准正交基，故 $mt(B)mt(B)^T = mt(I)_m$，因此我们得到了：
+因为 $mt(B)$ 的各行是标准正交基，故 $mt(B)mt(B)^(upright(T)) = mt(I)_m$，因此我们得到了：
 $
   zz(i) = mt(B) xx(i)
 $
@@ -130,36 +130,36 @@ $ EE = 1/N sum_(i = 1)^N xx(i) = arrow(0) $
 
 因此目前的方差等价于
 
-$ VV_N = 1/N sum_(i=1)^N zz(i)^T zz(i) in RR $.
+$ VV_N = 1/N sum_(i=1)^N zz(i)^(upright(T)) zz(i) in RR $.
 
 因此
 $
-  VV_N & = 1/N sum_(i=1)^N zz(i)^T zz(i)
-  & = 1/N sum_(i=1)^N tr(zz(i) zz(i)^T)
-  & = 1/N sum_(i=1)^N tr(mt(B) xx(i) xx(i)^T mt(B)^T)
+  VV_N & = 1/N sum_(i=1)^N zz(i)^(upright(T)) zz(i)
+  & = 1/N sum_(i=1)^N tr(zz(i) zz(i)^(upright(T)))
+  & = 1/N sum_(i=1)^N tr(mt(B) xx(i) xx(i)^(upright(T)) mt(B)^(upright(T)))
 $
 因为求和和求迹都是线性算子，把求和号移进迹
 $
-  & = 1/N tr(mt(B) (sum^N_(i=1) xx(i) xx(i)^T) mt(B)^T) & = 1/N tr(mt(B) mt(S) mt(B)^T)
+  & = 1/N tr(mt(B) (sum^N_(i=1) xx(i) xx(i)^(upright(T))) mt(B)^(upright(T))) & = 1/N tr(mt(B) mt(S) mt(B)^(upright(T)))
 $
 
 $mt(S)$是$x$不同分量的协方差矩阵, 因此是对称的, 所以有
 $
-  & = 1/N tr(mt(B) mt(U) Lambda mt(U)^T mt(B)^T)
+  & = 1/N tr(mt(B) mt(U) Lambda mt(U)^(upright(T)) mt(B)^(upright(T)))
 $
 
 $
-  & = 1/N tr(mt(P) Lambda mt(P)^T), quad mt(P) = mt(B)mt(U)
+  & = 1/N tr(mt(P) Lambda mt(P)^(upright(T))), quad mt(P) = mt(B)mt(U)
 $
-我们来检查新矩阵 $mt(P) in RR^(m times M)$ 的性质。由于 $mt(B)$ 满足正交约束 $mt(B)mt(B)^T = mt(I)_m$，且 $mt(U)$ 是正交阵（$mt(U)mt(U)^T = mt(I)_M$），因此有：
+我们来检查新矩阵 $mt(P) in RR^(m times M)$ 的性质。由于 $mt(B)$ 满足正交约束 $mt(B)mt(B)^(upright(T)) = mt(I)_m$，且 $mt(U)$ 是正交阵（$mt(U)mt(U)^(upright(T)) = mt(I)_M$），因此有：
 $
-  mt(P) mt(P)^T = (mt(B) mt(U)) (mt(B) mt(U))^T = mt(B) mt(U) mt(U)^T mt(B)^T = mt(B) mt(I)_M mt(B)^T = mt(B)mt(B)^T = mt(I)_m
+  mt(P) mt(P)^(upright(T)) = (mt(B) mt(U)) (mt(B) mt(U))^(upright(T)) = mt(B) mt(U) mt(U)^(upright(T)) mt(B)^(upright(T)) = mt(B) mt(I)_M mt(B)^(upright(T)) = mt(B)mt(B)^(upright(T)) = mt(I)_m
 $
 这说明新矩阵 $mt(P)$ 的这 $m$ 个行向量之间依然保持着标准正交的关系。
 
 现在，我们将目标函数的矩阵迹展开为对角阵的加权求和形式：
 $
-  1/N tr(mt(P) Lambda mt(P)^T) = 1/N sum_(j=1)^m sum_(k=1)^M P_(j,k)^2 lambda_k = sum_(k=1)^M (sum_(j=1)^m P_(j,k)^2) (lambda_k / N)
+  1/N tr(mt(P) Lambda mt(P)^(upright(T))) = 1/N sum_(j=1)^m sum_(k=1)^M P_(j,k)^2 lambda_k = sum_(k=1)^M (sum_(j=1)^m P_(j,k)^2) (lambda_k / N)
 $
 令 $w_k = sum_(j=1)^m P_(j,k)^2$ 作为分配给第 $k$ 个特征值的"权重配额"。由于 $mt(P)$ 的行向量是标准正交的，这些配额受到两个严格的边界限制：
 1. 全局总配额有限：$sum_(k=1)^M w_k = m$（即矩阵 $mt(P)$ 所有元素的平方和等于其行数 $m$）。
@@ -192,9 +192,9 @@ $
 所以这个不等号可以被取到.
 这样我们就证明了最大的值在我们选择$mt(B)$的前$m$大的特征值的特征向量时取到.注意， 这个
 并非唯一的解， 只要$mt(B)$的子空间是一样的就可以了。
-同时，约定 $mt(X)$ 的 SVD 为 $mt(X) = mt(V) mt(Sigma) mt(U)^T$（其中 $mt(U) in RR^(M times M)$ 为右奇异向量矩阵），则：
+同时，约定 $mt(X)$ 的 SVD 为 $mt(X) = mt(V) mt(Sigma) mt(U)^(upright(T))$（其中 $mt(U) in RR^(M times M)$ 为右奇异向量矩阵），则：
 $
-  mt(S) = mt(X)^T mt(X) = (mt(U) mt(Sigma) mt(V)^T)(mt(V) mt(Sigma) mt(U)^T) = mt(U) mt(Sigma)^2 mt(U)^T
+  mt(S) = mt(X)^(upright(T)) mt(X) = (mt(U) mt(Sigma) mt(V)^(upright(T)))(mt(V) mt(Sigma) mt(U)^(upright(T))) = mt(U) mt(Sigma)^2 mt(U)^(upright(T))
 $
 因此为了求$mt(S)$的特征值, 我们只需要对$mt(X)$做SVD即可.
 
@@ -237,35 +237,35 @@ $
 假设高维原始数据 $xx(i) in RR^M$ 服从均值为 $arrow(0)$，协方差矩阵为 $mt(S)$ 的多元正态分布 $cal(N)(arrow(0), mt(S))$。其连续信息熵定义为：
 $
   H(mt(X)) & = - EE[ln p(arrow(x))] \
-  & = - EE[ln (1/((2 pi)^(M/2) det(S)^(1/2)) exp(-1/2 (arrow(x) - arrow(mu))^T mt(S)^(-1) (arrow(x) - arrow(mu))))] \
-  & = 1/2ln((2 pi )^M det(mt(S))) + 1/2 EE[(arrow(x) - arrow(mu))^T mt(S)^(-1) (arrow(x) - arrow(mu))] \
-  & = 1/2ln((2 pi )^M det(mt(S))) + 1/2 EE[tr((arrow(x) - arrow(mu))^T mt(S)^(-1) (arrow(x) - arrow(mu)))] \
-  & = 1/2 ln((2 pi )^M det(mt(S))) + 1/2 EE[tr((arrow(x) - arrow(mu))(arrow(x) - arrow(mu))^T mt(S)^(-1))] \
+  & = - EE[ln (1/((2 pi)^(M/2) det(S)^(1/2)) exp(-1/2 (arrow(x) - arrow(mu))^(upright(T)) mt(S)^(-1) (arrow(x) - arrow(mu))))] \
+  & = 1/2ln((2 pi )^M det(mt(S))) + 1/2 EE[(arrow(x) - arrow(mu))^(upright(T)) mt(S)^(-1) (arrow(x) - arrow(mu))] \
+  & = 1/2ln((2 pi )^M det(mt(S))) + 1/2 EE[tr((arrow(x) - arrow(mu))^(upright(T)) mt(S)^(-1) (arrow(x) - arrow(mu)))] \
+  & = 1/2 ln((2 pi )^M det(mt(S))) + 1/2 EE[tr((arrow(x) - arrow(mu))(arrow(x) - arrow(mu))^(upright(T)) mt(S)^(-1))] \
   & = 1/2 ln((2 pi )^M det(mt(S))) + 1/2 EE[tr(mt(S) mt(S)^(-1))] \
   & = 1/2 ln((2 pi )^M det(mt(S))) + 1/2 M \
   &= M/2 (1 + ln(2 pi)) + 1/2 ln det(mt(S))
 $
-当我们将数据投影到由 $mt(B) in RR^(m times M)$ 支撑的低维子空间，得到 $zz(i) = mt(B)xx(i)$ 时，由前面的推导， 低维变量 $zz(i)$ 的协方差矩阵变为 $mt(S)_z = mt(B)mt(S)mt(B)^T$。
+当我们将数据投影到由 $mt(B) in RR^(m times M)$ 支撑的低维子空间，得到 $zz(i) = mt(B)xx(i)$ 时，由前面的推导， 低维变量 $zz(i)$ 的协方差矩阵变为 $mt(S)_z = mt(B)mt(S)mt(B)^(upright(T))$。
 
 此时，低维空间所保留的信息熵为：
 $
-  H(mt(Z)) = m/2 (1 + ln(2 pi)) + 1/2 ln det(mt(B)mt(S)mt(B)^T)
+  H(mt(Z)) = m/2 (1 + ln(2 pi)) + 1/2 ln det(mt(B)mt(S)mt(B)^(upright(T)))
 $
-为了让压缩后的低维特征最大程度地保留原始高维空间的信息（即信息流失最少），我们的目标是**最大化低维空间的熵 $H(mt(Z))$**。在基向量标准正交（$mt(B)mt(B)^T = mt(I)_m$）的约束下，这等价于求解：
+为了让压缩后的低维特征最大程度地保留原始高维空间的信息（即信息流失最少），我们的目标是**最大化低维空间的熵 $H(mt(Z))$**。在基向量标准正交（$mt(B)mt(B)^(upright(T)) = mt(I)_m$）的约束下，这等价于求解：
 $
-  max_(mt(B)) det(mt(B)mt(S)mt(B)^T)
-  "subject to" quad mt(B)mt(B)^T = mt(I)_m
+  max_(mt(B)) det(mt(B)mt(S)mt(B)^(upright(T)))
+  "subject to" quad mt(B)mt(B)^(upright(T)) = mt(I)_m
 $
 
-利用对称阵 $mt(S)$ 的特征值分解 $mt(S) = mt(U)Lambda mt(U)^T$，并令 $mt(P) = mt(B)mt(U)$（满足 $mt(P)mt(P)^T = mt(I)_m$），目标矩阵可以写为：
+利用对称阵 $mt(S)$ 的特征值分解 $mt(S) = mt(U)Lambda mt(U)^(upright(T))$，并令 $mt(P) = mt(B)mt(U)$（满足 $mt(P)mt(P)^(upright(T)) = mt(I)_m$），目标矩阵可以写为：
 $
-  mt(B)mt(S)mt(B)^T = mt(P)Lambda mt(P)^T
+  mt(B)mt(S)mt(B)^(upright(T)) = mt(P)Lambda mt(P)^(upright(T))
 $
-由 Cauchy-Binet 公式，对任意满足 $mt(P)mt(P)^T = mt(I)_m$ 的矩阵 $mt(P) in RR^(m times M)$ 与半正定对角阵 $Lambda$，有：
+由 Cauchy-Binet 公式，对任意满足 $mt(P)mt(P)^(upright(T)) = mt(I)_m$ 的矩阵 $mt(P) in RR^(m times M)$ 与半正定对角阵 $Lambda$，有：
 $
-  det(mt(P)Lambda mt(P)^T) = sum_(|S|=m) product_(k in S) lambda_k dot m_S^2 <= product_(i=1)^m lambda_i
+  det(mt(P)Lambda mt(P)^(upright(T))) = sum_(|S|=m) product_(k in S) lambda_k dot m_S^2 <= product_(i=1)^m lambda_i
 $
-其中求和遍历所有大小为 $m$ 的下标子集 $S$，$m_S$ 为 $mt(P)$ 对应列构成的 $m times m$ 子方阵的行列式，且由 Cauchy-Binet 公式知 $sum_(|S|=m) m_S^2 = det(mt(P)mt(P)^T) = 1$。因此上界等号当且仅当所有权重集中在 $S = {1, dots, m}$（对应最大 $m$ 个特征值）时取到。
+其中求和遍历所有大小为 $m$ 的下标子集 $S$，$m_S$ 为 $mt(P)$ 对应列构成的 $m times m$ 子方阵的行列式，且由 Cauchy-Binet 公式知 $sum_(|S|=m) m_S^2 = det(mt(P)mt(P)^(upright(T))) = 1$。因此上界等号当且仅当所有权重集中在 $S = {1, dots, m}$（对应最大 $m$ 个特征值）时取到。
 
 当且仅当 $mt(P) = mat(mt(I)_m, mt(0))$ 时，等号成立。此时 $mt(B)$ 对应的行向量恰好是 $mt(S)$ 前 $m$ 个最大特征值所对应的特征向量。
 
@@ -285,7 +285,7 @@ $
   L(mt(W)_e, mt(W)_d) = 1/N sum_(i=1)^N ||xx(i) - mt(W)_d mt(W)_e xx(i)||^2
 $
 
-与PCA的角度二对比，这个损失函数的形式完全相同，区别仅在于**约束条件**：PCA要求 $mt(B)mt(B)^T = mt(I)_m$，而线性自编码器对 $mt(W)_e$ 和 $mt(W)_d$ 没有任何正交约束。
+与PCA的角度二对比，这个损失函数的形式完全相同，区别仅在于**约束条件**：PCA要求 $mt(B)mt(B)^(upright(T)) = mt(I)_m$，而线性自编码器对 $mt(W)_e$ 和 $mt(W)_d$ 没有任何正交约束。
 
 这看起来是一个更宽松的问题——那么它的解还是PCA吗？
 
@@ -307,15 +307,15 @@ $
 
 然而，从角度二的推导中我们已经知道：对任意固定子空间，使重构误差最小的映射恰好是**正交投影**。换句话说，即使允许 $mt(A)$ 是任意秩-$m$ 矩阵，最优的 $mt(A)^*$ 也必然是某个 $m$ 维子空间上的正交投影算子：
 $
-  mt(A)^* = mt(U)_m mt(U)_m^T
+  mt(A)^* = mt(U)_m mt(U)_m^(upright(T))
 $
 其中 $mt(U)_m$ 的列为 $mt(S)$ 前 $m$ 个最大特征值对应的特征向量。这与角度二的结论完全吻合——PCA 子空间是全局最优解。
 
-一组具体的最优参数为 $mt(W)_d = mt(U)_m,\ mt(W)_e = mt(U)_m^T$，但最优解并不唯一：对任意 $m times m$ 正交矩阵 $mt(R)$，令
+一组具体的最优参数为 $mt(W)_d = mt(U)_m,\ mt(W)_e = mt(U)_m^(upright(T))$，但最优解并不唯一：对任意 $m times m$ 正交矩阵 $mt(R)$，令
 $
-  mt(W)_d = mt(U)_m mt(R), quad mt(W)_e = mt(R)^T mt(U)_m^T
+  mt(W)_d = mt(U)_m mt(R), quad mt(W)_e = mt(R)^(upright(T)) mt(U)_m^(upright(T))
 $
-同样满足 $mt(W)_d mt(W)_e = mt(U)_m mt(U)_m^T$，因此也是全局最优解。这说明线性自编码器的权重矩阵本身存在**旋转自由度**：网络学到的编码和解码方向在子空间内可以任意旋转，但它们共同张成的子空间始终是唯一确定的 PCA 主成分子空间。
+同样满足 $mt(W)_d mt(W)_e = mt(U)_m mt(U)_m^(upright(T))$，因此也是全局最优解。这说明线性自编码器的权重矩阵本身存在**旋转自由度**：网络学到的编码和解码方向在子空间内可以任意旋转，但它们共同张成的子空间始终是唯一确定的 PCA 主成分子空间。
 
 
 一个没有任何正交约束、通过梯度下降训练的线性神经网络，在全局最优时自然地发现了数据中最重要的线性结构。一方面， 他说明了神经网络真正的能够总结规律， 另一方面， 也说明
@@ -332,9 +332,9 @@ $
   align: (center, left, center),
   stroke: 0.5pt,
   [*角度*], [*优化目标*], [*最优解*],
-  [最大多样性], [最大化投影方差 $"tr"(mt(B)mt(S)mt(B)^T)$], [前 $m$ 大特征向量],
+  [最大多样性], [最大化投影方差 $"tr"(mt(B)mt(S)mt(B)^(upright(T)))$], [前 $m$ 大特征向量],
   [最小损失], [最小化重构误差 $sum||xx(i) - av(i)||^2$], [前 $m$ 大特征向量],
-  [信息熵], [最大化低维熵 $det(mt(B)mt(S)mt(B)^T)$], [前 $m$ 大特征向量],
+  [信息熵], [最大化低维熵 $det(mt(B)mt(S)mt(B)^(upright(T)))$], [前 $m$ 大特征向量],
   [自编码器], [最小化重构误差，无正交约束], [前 $m$ 大特征向量],
 )
 
