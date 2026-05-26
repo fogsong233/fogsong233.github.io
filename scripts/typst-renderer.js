@@ -28,8 +28,15 @@ function resolveSourcePath(hexo, dataPath) {
 }
 
 function htmlBodyFragment(html) {
-  const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-  return (match ? match[1] : html).trim();
+  const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const styles = headMatch
+    ? Array.from(headMatch[1].matchAll(/<style\b[^>]*>[\s\S]*?<\/style>/gi))
+        .map(match => match[0].trim())
+        .join('\n')
+    : '';
+  const body = (bodyMatch ? bodyMatch[1] : html).trim();
+  return [styles, body].filter(Boolean).join('\n');
 }
 
 function frontMatter(text) {

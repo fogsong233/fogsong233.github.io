@@ -12,7 +12,6 @@ typst_render: html
 #import "@preview/cetz:0.5.1"
 #import "@preview/suiji:0.5.1": *
 #set text(font: ("Libertinus Serif", "Noto Serif CJK SC", "Noto Sans CJK SC", "AR PL SungtiL GB", "STZhongsong", "STSong", "SimSun"), size: 12pt)
-#show math.equation: it => html.frame(it)
 #set page(margin: (x: 2.2cm, y: 2.5cm))
 #set par(justify: true, leading: 0.7em)
 
