@@ -28,6 +28,10 @@ jobs:
           key: ${{ runner.OS }}-npm-cache
           restore-keys: |
             ${{ runner.OS }}-npm-cache
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v5.1.0
+        with:
+          typst-version: 0.14.2
       - name: Install Dependencies
         run: npm install
       - name: Build

@@ -6,5 +6,3 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
-**/.hexo-typst-*.typ
-**/.hexo-typst-svg-*/
