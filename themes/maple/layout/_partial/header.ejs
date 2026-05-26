@@ -1,4 +1,13 @@
 <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <%
+  const navIcons = {
+    Home: 'ri:home-4-line',
+    Posts: 'ri:archive-line',
+    Categories: 'ri:folder-2-line',
+    Tags: 'ri:price-tag-3-line',
+    About: 'ri:user-3-line'
+  };
+  %>
   <div class="max-auto">
     <nav class="flex items-center text-base">
       <a href="<%- config.root %>" class="group">
@@ -13,23 +22,22 @@
       <div class="flex-1"></div>
       <div class="flex items-center gap-3">
         <% for (var i in theme.nav){ %>
-          <a class="hidden sm:flex" href="<%- url_for(theme.nav[i]) %>"><%= i %></a>
+          <a class="w-5 h-5 hidden md:flex items-center justify-center" title="<%- i %>" aria-label="<%- i %>" href="<%- url_for(theme.nav[i]) %>">
+            <iconify-icon width="20" icon="<%- navIcons[i] || 'ri:links-line' %>"></iconify-icon>
+          </a>
         <% } %>
         <% if (theme.links !== undefined) { %>
           <% for (var key in theme.links) { %>
-            <a class="w-5 h-5 hidden sm:flex" title="<%- key %>" href="<%= theme.links[key] %>">
+            <a class="w-5 h-5 hidden md:flex" title="<%- key %>" href="<%= theme.links[key] %>">
               <iconify-icon width="20" icon="ri:<%- key.toLowerCase() %>-line"></iconify-icon>
             </a>
           <% } %>
         <% } %>
-        <a class="w-5 h-5 hidden sm:flex" title="<%- key %>" href="rss2.xml">
-          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
-        </a>
         <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
           <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
         </a>
       </div>
-      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+      <div class="flex items-center justify-center gap-3 ml-3 md:hidden">
         <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
           <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
         </span>
@@ -40,12 +48,15 @@
     </nav>
   </div>
 </header>
-<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+<div id="menu-panel" class="h-0 overflow-hidden md:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
   <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
-    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+    <ul class="nav flex flex-col md:flex-row text-sm font-medium">
       <% for (var i in theme.nav){ %>
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="<%- url_for(theme.nav[i]) %>" class="flex h-12 sm:h-auto items-center"><%= i %></a>
+        <li class="nav-portfolio md:mx-2 border-b md:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="<%- url_for(theme.nav[i]) %>" class="flex h-12 md:h-auto items-center gap-3">
+            <iconify-icon width="20" icon="<%- navIcons[i] || 'ri:links-line' %>"></iconify-icon>
+            <span><%= i %></span>
+          </a>
         </li>
       <% } %>
     </ul>

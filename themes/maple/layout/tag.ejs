@@ -1,31 +1,39 @@
-<%#
-this page will judge whether current page is 'tag.'
-url:'http://localhost:4000/tag/' return false.
-url:'http://localhost:4000/tags/test/' return true.
-if you enter 'tag' page by click link will show all tags.
-otherwise if you enter 'tags' by click post header link will show the single tag of this post.
-how to add a tag page:
-    1. hexo new page "tag"
-    2. cd source/tag/index.md
-    3. add layout pattern like this:
-    ---
-    title: '''tag'''
-    date: 2019-06-09 09:56:49
-    layout: tag
-    ---
- %>
 <% if(is_tag()){ %>
-  <%- partial('archive', {pagination: config.tag, index: true}) %>
+<%- partial('archive', {pagination: config.tag, index: true}) %>
 <% } else { %>
-  <div class="px-6 max-w-prose mx-auto md:px-0 mt-6">
-    <h2 class="font-bold text-2xl">Tags</h2>
-    <ul class="mt2">
-      <% site.tags.forEach(item => { %>
-        <li class="mt-2">
-          <a href="<%-url_for(item.path)%>"><%- item.name%></a>
-          <span >(<%-item.length%>)</span>
-        </li>
-      <% }) %>
-    </ul>
+<%
+const tags = [];
+site.tags.forEach(function (tag) {
+  const count = tag.posts ? tag.posts.length : (tag.length || 0);
+  tags.push({ name: tag.name, path: tag.path, count: count });
+});
+tags.sort(function (a, b) {
+  return b.count - a.count || a.name.localeCompare(b.name);
+});
+const totalPosts = tags.reduce(function (sum, tag) {
+  return sum + tag.count;
+}, 0);
+%>
+<section class="px-6 max-w-prose mx-auto gap-10 grid grid-cols-1">
+  <div class="flex flex-col h-48 justify-center">
+    <p class="text-sm text-gray-400 tracking-wide">Index</p>
+    <h1 class="site-title text-4xl leading-relaxed">Tags</h1>
+    <p class="text-gray-500 mt-2">
+      <%- tags.length %> tags · <%- totalPosts %> posts
+    </p>
   </div>
+  <div class="flex flex-wrap gap-3">
+    <% tags.forEach(function (tag, index) { %>
+      <a
+        style="<%- '--stagger:' + index %>"
+        href="<%- url_for(tag.path) %>"
+        class="inline-flex items-center gap-2 rounded-md bg-gray-100 px-3 py-2 text-sm transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+        data-animate
+      >
+        <span class="font-medium"><%- tag.name %></span>
+        <span class="text-gray-400"><%- tag.count %></span>
+      </a>
+    <% }) %>
+  </div>
+</section>
 <% } %>

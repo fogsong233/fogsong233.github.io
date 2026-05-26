@@ -1,32 +1,45 @@
-<%#
-this page will judge whether current page is 'category.'
-url:'http://localhost:4000/category/' return false.
-url:'http://localhost:4000/categories/test/' return true.
-if you enter 'category' page by click link will show all categories.
-otherwise if you enter 'categories' by click post header link will show the single category of this post.
-how to add a category page:
-    1. hexo new page "category"
-    2. cd source/category/index.md
-    3. add layout pattern like this:
-    ---
-    title: '''category'''
-    date: 2019-06-09 09:56:49
-    layout: category
-    ---
- %>
-
 <% if(is_category()){ %>
 <%- partial('archive', {pagination: config.category, index: true}) %>
 <% } else { %>
-<div class="px-6 max-w-prose mx-auto md:px-0 mt-6">
-  <h2 class="font-bold text-2xl">Categories</h2>
-  <ul class="mt-2">
-    <% site.categories.forEach(category =>{ %>
-      <li class="mt-2">
-        <a href="<%- url_for(category.path) %>"> <%- category.name %></a>
-        <span>(<%- category.posts.length %>)</span>
-      </li>
+<%
+const categories = [];
+site.categories.forEach(function (category) {
+  const count = category.posts ? category.posts.length : (category.length || 0);
+  categories.push({ name: category.name, path: category.path, count: count });
+});
+categories.sort(function (a, b) {
+  return b.count - a.count || a.name.localeCompare(b.name);
+});
+const totalPosts = categories.reduce(function (sum, category) {
+  return sum + category.count;
+}, 0);
+%>
+<section class="px-6 max-w-prose mx-auto gap-10 grid grid-cols-1">
+  <div class="flex flex-col h-48 justify-center">
+    <p class="text-sm text-gray-400 tracking-wide">Index</p>
+    <h1 class="site-title text-4xl leading-relaxed">Categories</h1>
+    <p class="text-gray-500 mt-2">
+      <%- categories.length %> categories · <%- totalPosts %> posts
+    </p>
+  </div>
+  <div class="grid grid-cols-1 gap-1">
+    <% categories.forEach(function (category, index) { %>
+      <a
+        style="<%- '--stagger:' + index %>"
+        href="<%- url_for(category.path) %>"
+        class="group py-5 border-b border-gray-100 dark:border-white/10"
+        data-animate
+      >
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="font-bold text-xl group-hover:text-[#de7441] transition-colors">
+            <%- category.name %>
+          </h2>
+          <span class="text-sm text-gray-400 whitespace-nowrap">
+            <%- category.count %> posts
+          </span>
+        </div>
+      </a>
     <% }) %>
-  </ul>
-</div>
+  </div>
+</section>
 <% } %>

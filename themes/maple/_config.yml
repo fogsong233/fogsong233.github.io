@@ -1,8 +1,10 @@
 # Header
 nav:
+  Home: /
   Posts: /archives
-  # Categories: /category
-  # Tags: /tag
+  Categories: /categories
+  Tags: /tags
+  About: /about
 
 # favicon
 favicon: /favicon.png
@@ -13,7 +15,7 @@ logo: /images/logo.svg
 # links
 links:
   Github: https://github.com/fogsong233
-  # ZhiHu:
+  Zhihu: https://www.zhihu.com/people/fogsong233
   # Twitter:
   # Weibo:
 
