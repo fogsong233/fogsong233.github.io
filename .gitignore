@@ -7,5 +7,7 @@ public/
 .deploy*/
 _multiconfig.yml
 .typst-command
+.typst-nightly/
+markdown-draft/
 **/.hexo-typst-*.typ
 **/.hexo-typst-svg-*/
