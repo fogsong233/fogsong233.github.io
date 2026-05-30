@@ -1,8 +1,9 @@
-
 ---
 title: 随机n个点落在一个半圆
+date: 2026-05-30 18:18:28
 tags:
 ---
+
 
 #set text(
   font: (
